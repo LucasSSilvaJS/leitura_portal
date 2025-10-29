@@ -8,20 +8,23 @@ Two common options:
 Here we provide a simple HTTP wrapper for a generic Gemini-like endpoint.
 Replace the URL and auth flow according to your Google setup.
 """
+
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 import requests
 from config.config import Config
 from typing import Optional
+
 
 class GeminiClient:
     def __init__(self, api_key: Optional[str] = None):
         self.api_key = api_key or Config.GEMINI_API_KEY
         # NOTE: you may want to perform OAuth2/service-account flows here.
 
-    def reformulate_to_question(self, text: str, max_chars: int = 32) -> str:
+    def reformulate_to_question(self, text: str, max_chars: int = 96) -> str:
         """
         Sends a request to the generative model asking for a question-format title, <= max_chars.
         The prompt is explicit and enforces the constraint. We also fallback to programmatic truncation.
@@ -30,27 +33,19 @@ class GeminiClient:
             raise RuntimeError("GEMINI_API_KEY not configured")
 
         prompt = (
-            f"Reformule o título abaixo como UMA PERGUNTA (em português), com no máximo {max_chars} "
-            "caracteres **incluindo espaços**. Deve ser natural e curta. Retorne somente a pergunta, "
-            "sem pontuações extras antes ou depois.\n\n"
+            f"Transforme o título abaixo em uma PERGUNTA de SIM ou NÃO (em português), com no máximo {max_chars} "
+            "caracteres incluindo espaços. A pergunta deve soar natural e engajadora, como se fosse feita para "
+            "consultar a opinião pública sobre o tema — usando expressões como 'você concorda', 'você conhece', "
+            "'acha importante', etc. Retorne apenas a pergunta, sem pontuação extra antes ou depois.\n\n"
             f"Título: {text}\n\nPergunta:"
         )
 
         # URL correta da API do Google Gemini
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={self.api_key}"
-        headers = {
-            "Content-Type": "application/json"
-        }
+        headers = {"Content-Type": "application/json"}
         payload = {
-            "contents": [{
-                "parts": [{
-                    "text": prompt
-                }]
-            }],
-            "generationConfig": {
-                "maxOutputTokens": 60,
-                "temperature": 0.7
-            }
+            "contents": [{"parts": [{"text": prompt}]}],
+            "generationConfig": {"maxOutputTokens": 60, "temperature": 0.7},
         }
 
         resp = requests.post(url, json=payload, headers=headers, timeout=20)
@@ -68,7 +63,7 @@ class GeminiClient:
                         text_out = parts[0]["text"]
         except Exception as e:
             logger.warning(f"Erro ao processar resposta do Gemini: {e}")
-        
+
         if not text_out:
             text_out = data.get("text", "") or ""
         question = text_out.strip()
