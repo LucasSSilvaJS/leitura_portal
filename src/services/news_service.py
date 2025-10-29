@@ -31,7 +31,7 @@ class NewsService:
         1. Fetch list of latest items
         2. Read first item
         3. Store source item
-        4. Ask Gemini to reformulate to question <=32 chars
+        4. Ask Gemini to reformulate to question <=96 chars
         5. Send to external API and save response
         Returns dict with operation result.
         """
@@ -46,10 +46,10 @@ class NewsService:
         news = self.repo.create(source_title=title, source_url=url, author=author)
 
         try:
-            question = self.gemini.reformulate_to_question(title, max_chars=32)
+            question = self.gemini.reformulate_to_question(title, max_chars=96)
         except Exception as e:
             logger.exception("Erro ao chamar Gemini: %s", e)
-            question = safe_truncate(title, 32)
+            question = safe_truncate(title, 96)
             # ensure it's a question
             if not question.endswith("?"):
                 question = question.rstrip(".!;:,") + "?"

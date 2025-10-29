@@ -53,7 +53,7 @@ python tests/test_camara_fetcher.py
 ### 🎯 **Funcionalidades Mantidas**
 
 - ✅ **Extração automática** de notícias
-- ✅ **Reformulação com IA** (Gemini) em perguntas ≤32 caracteres
+- ✅ **Reformulação com IA** (Gemini) em perguntas 96 caracteres
 - ✅ **Envio para API externa**
 - ✅ **Agendamento automático** (segunda 9h)
 - ✅ **Processamento manual** via POST `/api/system/trigger`

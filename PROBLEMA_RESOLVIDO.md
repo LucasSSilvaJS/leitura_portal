@@ -84,7 +84,7 @@ payload = {
 ## 🎉 Funcionamento Completo
 
 - ✅ **Extração**: Notícias da Câmara Municipal do Recife
-- ✅ **Processamento**: IA Gemini reformulando títulos em perguntas ≤32 caracteres
+- ✅ **Processamento**: IA Gemini reformulando títulos em perguntas 96 caracteres
 - ✅ **Envio**: Pergunta enviada com SUCESSO para API externa
 - ✅ **Resposta**: API externa retornou `pergunta_id` e `data_criacao`
 - ✅ **Armazenamento**: Resposta salva no banco de dados
